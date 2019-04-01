@@ -10,11 +10,11 @@ function configureSSH {
 function installAndRunNgrok {
 	curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip --output ngrok.zip
 	unzip ./ngrok.zip
-	./ngrok tcp 22 --authtoken $NGROK_TOKEN --log=stdout > /tmp/ngrok_log & 
+	./ngrok tcp 22 --authtoken $NGROK_TOKEN --log=stdout > /tmp/ngrok_log &
 	sleep 2
 	grep 'Tunnel session failed' /tmp/ngrok_log && exit 1
-	curl localhost:4040/status | grep -o '\S.tcp.ngrok.io:[0-9]\+' | awk -F ":" '{print "\nYour SSH command:\n\n ssh root@"$1" -p "$2}'
-	while true; do sleep 600 && echo ...Keep alive...; done
+	cat /tmp/ngrok_log | grep -o '\S.tcp.ngrok.io:[0-9]\+' | awk -F ":" '{print "\nYour SSH command:\n\n ssh root@"$1" -p "$2}'
+	while true; do sleep 600 && cat /tmp/ngrok_log; done
 }
 
 if [ -z "$NGROK_TOKEN" ]; then echo "The ngrok token is not provided!" && exit 1; fi
