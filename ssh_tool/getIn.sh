@@ -14,7 +14,7 @@ function installAndRunNgrok {
 	sleep 2
 	grep 'Tunnel session failed' /tmp/ngrok_log && exit 1
 	cat /tmp/ngrok_log | grep -o '\S.tcp.ngrok.io:[0-9]\+' | awk -F ":" '{print "\nYour SSH command:\n\n ssh root@"$1" -p "$2}'
-	while true; do sleep 600 && cat /tmp/ngrok_log; done
+	while true; do sleep 600 && echo ...Keep alive...; done
 }
 
 if [ -z "$NGROK_TOKEN" ]; then echo "The ngrok token is not provided!" && exit 1; fi
